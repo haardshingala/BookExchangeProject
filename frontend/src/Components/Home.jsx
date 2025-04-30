@@ -16,7 +16,7 @@ export default function Home() {
       if (filters.query) params.query = filters.query;
       if (filters.genre && filters.genre !== 'All') params.genre = filters.genre;
 
-      const res = await axios.get('http://localhost:5000/book/get-all-books', { params });
+      const res = await axios.get('https://bookexchangeplatform-3rjn.onrender.com/book/get-all-books', { params });
       setBooks(res.data);
     } catch (err) {
       console.error('Failed to fetch books:', err);

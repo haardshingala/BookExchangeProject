@@ -53,7 +53,7 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
       if (!token) return;
   
       try {
-        const res = await fetch("http://localhost:5000/user/profile", {
+        const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
   
@@ -142,7 +142,7 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
           alignItems: 'center',
         }}
       >
-        <Avatar alt={user?.fullName} src={`http://localhost:5000${user?.profileImageURL}`} sx={{ mr: 1 }} />
+        <Avatar alt={user?.fullName} src={`https://bookexchangeplatform-3rjn.onrender.com${user?.profileImageURL}`} sx={{ mr: 1 }} />
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           {user?.fullName}
         </Typography>
@@ -211,7 +211,7 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
           {isLoggedIn && (
             <>
               <IconButton>
-                <Avatar alt={user?.fullName} src={`http://localhost:5000${user?.profileImageURL}`} />
+                <Avatar alt={user?.fullName} src={`https://bookexchangeplatform-3rjn.onrender.com${user?.profileImageURL}`} />
               </IconButton>
               <IconButton sx={{ color: theme.palette.background.default }} onClick={toggleDrawer(true)}>
                 <MenuIcon />

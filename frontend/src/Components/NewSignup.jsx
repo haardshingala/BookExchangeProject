@@ -78,7 +78,7 @@ export default function NewSignUp() {
       }
   
       const response = await axios.post(
-        'http://localhost:5000/user/signup',
+        'https://bookexchangeplatform-3rjn.onrender.com/user/signup',
         submitData,
         {
           headers: {

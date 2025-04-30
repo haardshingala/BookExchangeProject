@@ -59,7 +59,7 @@ export default function NewAddBook() {
     try {
       const token = localStorage.getItem("token");
   
-      const response = await fetch("http://localhost:5000/book/add-book", {
+      const response = await fetch("https://bookexchangeplatform-3rjn.onrender.com/book/add-book", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

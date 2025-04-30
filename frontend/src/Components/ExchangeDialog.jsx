@@ -37,7 +37,7 @@ export default function ExchangeDialog({ book, isOpen, onOpenChange }) {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
       try {
-        const response = await fetch("http://localhost:5000/user/MyListings", {
+        const response = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/MyListings", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.ok) {
@@ -62,7 +62,7 @@ const handleExchangeRequest = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`http://localhost:5000/user/request/${book._id}`, {
+    const response = await fetch(`https://bookexchangeplatform-3rjn.onrender.com/user/request/${book._id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const handleCancelRequest = async () => {
 
   try {
     const res = await fetch(
-      `http://localhost:5000/user/cancel/${exchangeId}`,
+      `https://bookexchangeplatform-3rjn.onrender.com/user/cancel/${exchangeId}`,
       {
         method: "DELETE",
         headers: {
@@ -128,7 +128,7 @@ useEffect(() => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:5000/user/sent-requests", {
+      const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/sent-requests", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -191,7 +191,7 @@ useEffect(() => {
           <Box sx={{ width: { xs: "100%", sm: "35%" } }}>
             <Box
               component="img"
-              src={`http://localhost:5000${book.coverImageURL}`}
+              src={`https://bookexchangeplatform-3rjn.onrender.com${book.coverImageURL}`}
               alt={book.title}
               sx={{
                 width: "100%",
@@ -235,7 +235,7 @@ useEffect(() => {
               <Avatar
                 src={
                   book.owner?.profileImageURL
-                    ? `http://localhost:5000${book.owner.profileImageURL}`
+                    ? `https://bookexchangeplatform-3rjn.onrender.com${book.owner.profileImageURL}`
                     : book.owner.fullName // or your fallback image URL
                 }
               />

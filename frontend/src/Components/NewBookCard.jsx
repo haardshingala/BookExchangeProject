@@ -33,7 +33,7 @@ const NewBookCard = ({ book }) => {
   const handleToggleFavorite = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/${isFavorite ? 'remove-favourite' : 'add-favourite'}/${book._id}`,
+        `https://bookexchangeplatform-3rjn.onrender.com/user/${isFavorite ? 'remove-favourite' : 'add-favourite'}/${book._id}`,
         {
           method: isFavorite ? 'DELETE' : 'PUT',
           headers: {
@@ -89,7 +89,7 @@ const NewBookCard = ({ book }) => {
           <CardMedia
             component="img"
             height="250"
-            image={`http://localhost:5000${book.coverImageURL}`}
+            image={`https://bookexchangeplatform-3rjn.onrender.com${book.coverImageURL}`}
 
             alt={book.title}
             sx={{

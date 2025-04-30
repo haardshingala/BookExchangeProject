@@ -35,7 +35,7 @@ export default function ExchangeRequests() {
   
   const fetchReceivedRequests = async () => {
     try {
-      const res = await fetch("http://localhost:5000/user/recieved-requests", {
+      const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/recieved-requests", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -48,7 +48,7 @@ export default function ExchangeRequests() {
 useEffect(() => {
   const fetchSentRequests = async () => {
     try {
-      const res = await fetch("http://localhost:5000/user/sent-requests", {
+      const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/sent-requests", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -72,7 +72,7 @@ const handleAcceptRequest = async (exchangeId) => {
   const token = localStorage.getItem("token");
 
   try {
-    const res = await fetch(`http://localhost:5000/user/accept/${exchangeId}`, {
+    const res = await fetch(`https://bookexchangeplatform-3rjn.onrender.com/user/accept/${exchangeId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const handleRejectRequest = async (exchangeId) => {
   const token = localStorage.getItem("token");
 
   try {
-    const res = await fetch(`http://localhost:5000/user/reject/${exchangeId}`, {
+    const res = await fetch(`https://bookexchangeplatform-3rjn.onrender.com/user/reject/${exchangeId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +142,7 @@ const handleRejectRequest = async (exchangeId) => {
             <Card key={req._id} sx={{ mb: 2, p: 2, display: 'flex', alignItems: 'center' }}>
               <Avatar
                 variant="square"
-                src={`http://localhost:5000${req.requestedBook.coverImageURL}`}
+                src={`https://bookexchangeplatform-3rjn.onrender.com${req.requestedBook.coverImageURL}`}
               alt={req.requestedBook.title}
                 sx={{ width: 100, height: 150, mr: 2 }}
               />
@@ -182,7 +182,7 @@ const handleRejectRequest = async (exchangeId) => {
             <Card key={req._id} sx={{ mb: 2, p: 2, display: 'flex', alignItems: 'center' }}>
               <Avatar
                 variant="square"
-                src={`http://localhost:5000${req.requestedBook.coverImageURL}`}
+                src={`https://bookexchangeplatform-3rjn.onrender.com${req.requestedBook.coverImageURL}`}
               alt={req.requestedBook.title}
                 sx={{ width: 100, height: 150, mr: 2 }}
               />
