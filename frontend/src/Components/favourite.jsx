@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import BookList from './BookList';
-
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 export default function Favourites() {
   const [books, setBooks] = useState([]); // store books
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ export default function Favourites() {
     const fetchBooks = async () => {  
       const token = localStorage.getItem("token");
       try {
-        const response = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/get-all-favourite-books", {
+        const response = await fetch(`${API_BASE}/user/get-all-favourite-books`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.ok) {

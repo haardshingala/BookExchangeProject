@@ -18,6 +18,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -30,7 +31,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/profile", {
+        const res = await fetch(`${API_BASE}/user/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -57,7 +58,7 @@ export default function ProfilePage() {
     if (selectedImage) form.append("profileImage", selectedImage);
 
     try {
-      const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/update-profile", {
+      const res = await fetch(`${API_BASE}/user/update-profile`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: form,
@@ -73,7 +74,7 @@ export default function ProfilePage() {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/delete-profile", {
+      const res = await fetch(`${API_BASE}/user/delete-profile`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -96,7 +97,7 @@ export default function ProfilePage() {
           <Grid item xs={12} md={4} sx={{ textAlign: "center" }}>
             <Box sx={{ position: "relative", display: "inline-block" }}>
               <Avatar
-                src={`https://bookexchangeplatform-3rjn.onrender.com${user.profileImageURL}`}
+                src={`${API_BASE}${user.profileImageURL}`}
                 alt={user.fullName}
                 sx={{ width: 140, height: 140, mx: "auto", mb: 1 }}
               />

@@ -12,11 +12,9 @@ import {
   Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-
-
-
 import { useTheme } from '@mui/material/styles';
 import ExchangeDialog from './ExchangeDialog';
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 const NewBookCard = ({ book }) => {
   const theme = useTheme();
@@ -33,7 +31,7 @@ const NewBookCard = ({ book }) => {
   const handleToggleFavorite = async () => {
     try {
       const response = await fetch(
-        `https://bookexchangeplatform-3rjn.onrender.com/user/${isFavorite ? 'remove-favourite' : 'add-favourite'}/${book._id}`,
+        `${API_BASE}/user/${isFavorite ? 'remove-favourite' : 'add-favourite'}/${book._id}`,
         {
           method: isFavorite ? 'DELETE' : 'PUT',
           headers: {
@@ -89,7 +87,7 @@ const NewBookCard = ({ book }) => {
           <CardMedia
             component="img"
             height="250"
-            image={`https://bookexchangeplatform-3rjn.onrender.com${book.coverImageURL}`}
+            image={`${API_BASE}${book.coverImageURL}`}
 
             alt={book.title}
             sx={{

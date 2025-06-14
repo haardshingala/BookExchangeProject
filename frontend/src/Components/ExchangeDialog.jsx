@@ -20,6 +20,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useTheme } from "@mui/material/styles";
 import { toast } from "sonner";
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export default function ExchangeDialog({ book, isOpen, onOpenChange }) {
   const theme = useTheme();
@@ -37,7 +38,7 @@ export default function ExchangeDialog({ book, isOpen, onOpenChange }) {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
       try {
-        const response = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/MyListings", {
+        const response = await fetch(`${API_BASE}/user/MyListings`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.ok) {
@@ -62,7 +63,7 @@ const handleExchangeRequest = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://bookexchangeplatform-3rjn.onrender.com/user/request/${book._id}`, {
+    const response = await fetch(`${API_BASE}/user/request/${book._id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +102,7 @@ const handleCancelRequest = async () => {
 
   try {
     const res = await fetch(
-      `https://bookexchangeplatform-3rjn.onrender.com/user/cancel/${exchangeId}`,
+      `${API_BASE}/user/cancel/${exchangeId}`,
       {
         method: "DELETE",
         headers: {
@@ -128,7 +129,7 @@ useEffect(() => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/sent-requests", {
+      const res = await fetch(`${API_BASE}/user/sent-requests`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -191,7 +192,7 @@ useEffect(() => {
           <Box sx={{ width: { xs: "100%", sm: "35%" } }}>
             <Box
               component="img"
-              src={`https://bookexchangeplatform-3rjn.onrender.com${book.coverImageURL}`}
+              src={`${API_BASE}${book.coverImageURL}`}
               alt={book.title}
               sx={{
                 width: "100%",
@@ -235,7 +236,7 @@ useEffect(() => {
               <Avatar
                 src={
                   book.owner?.profileImageURL
-                    ? `https://bookexchangeplatform-3rjn.onrender.com${book.owner.profileImageURL}`
+                    ? `${API_BASE}.com${book.owner.profileImageURL}`
                     : book.owner.fullName // or your fallback image URL
                 }
               />

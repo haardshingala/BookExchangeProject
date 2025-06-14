@@ -13,6 +13,7 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export default function NewLogin({ setIsLoggedIn }) {
   const theme = useTheme();
@@ -34,7 +35,7 @@ export default function NewLogin({ setIsLoggedIn }) {
     const { email, password } = formData; // ✅ Destructure here
   
     try {
-      const response = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/signin", {
+      const response = await fetch(`${API_BASE}/user/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

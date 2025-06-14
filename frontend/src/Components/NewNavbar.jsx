@@ -24,9 +24,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
-
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -53,7 +53,7 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
       if (!token) return;
   
       try {
-        const res = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/profile", {
+        const res = await fetch(`${API_BASE}/user/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
   
@@ -142,7 +142,7 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
           alignItems: 'center',
         }}
       >
-        <Avatar alt={user?.fullName} src={`https://bookexchangeplatform-3rjn.onrender.com${user?.profileImageURL}`} sx={{ mr: 1 }} />
+        <Avatar alt={user?.fullName} src={`${API_BASE}${user?.profileImageURL}`} sx={{ mr: 1 }} />
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           {user?.fullName}
         </Typography>
@@ -211,7 +211,7 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
           {isLoggedIn && (
             <>
               <IconButton>
-                <Avatar alt={user?.fullName} src={`https://bookexchangeplatform-3rjn.onrender.com${user?.profileImageURL}`} />
+                <Avatar alt={user?.fullName} src={`${API_BASE}${user?.profileImageURL}`} />
               </IconButton>
               <IconButton sx={{ color: theme.palette.background.default }} onClick={toggleDrawer(true)}>
                 <MenuIcon />

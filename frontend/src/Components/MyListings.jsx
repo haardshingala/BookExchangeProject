@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyListings() {
   const [books, setBooks] = useState([]);
@@ -15,7 +16,7 @@ export default function MyListings() {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
       try {
-        const response = await fetch("https://bookexchangeplatform-3rjn.onrender.com/user/MyListings", {
+        const response = await fetch(`${API_BASE}/user/MyListings`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.ok) {
@@ -32,7 +33,7 @@ export default function MyListings() {
   const handleDelete = async (bookId) => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`https://bookexchangeplatform-3rjn.onrender.com/book/delete-book/${bookId}`, {
+      const response = await fetch(`${API_BASE}/book/delete-book/${bookId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -51,7 +52,7 @@ export default function MyListings() {
   const handleUpdate = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`https://bookexchangeplatform-3rjn.onrender.com/book/update-book/${editBook._id}`, {
+      const response = await fetch(`${API_BASE}/book/update-book/${editBook._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +89,7 @@ export default function MyListings() {
               <CardMedia
                 component="img"
                 sx={{ width: 150 }}
-                image={`https://bookexchangeplatform-3rjn.onrender.com${book.coverImageURL}`} // Correct path
+                image={`${API_BASE}.com${book.coverImageURL}`} // Correct path
                 alt={book.title}
               />
               <CardContent sx={{ flex: 1 }}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Avatar, IconButton, Stack, MenuItem } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export default function NewAddBook() {
   const theme = useTheme();
@@ -59,7 +60,7 @@ export default function NewAddBook() {
     try {
       const token = localStorage.getItem("token");
   
-      const response = await fetch("https://bookexchangeplatform-3rjn.onrender.com/book/add-book", {
+      const response = await fetch(`${API_BASE}/book/add-book`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

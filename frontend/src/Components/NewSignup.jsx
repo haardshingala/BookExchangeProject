@@ -17,6 +17,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
+const API_BASE = process.env.REACT_APP_BACKEND_URL;
 
 export default function NewSignUp() {
   const theme = useTheme();
@@ -78,7 +79,7 @@ export default function NewSignUp() {
       }
   
       const response = await axios.post(
-        'https://bookexchangeplatform-3rjn.onrender.com/user/signup',
+      `${API_BASE}/user/signup`,
         submitData,
         {
           headers: {
