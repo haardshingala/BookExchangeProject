@@ -176,7 +176,7 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
               fontFamily: "'Playfair Display', serif",
             }}
           >
-            Book Exchange
+            Book Loop
           </Typography>
 
           {!isLoggedIn && (
