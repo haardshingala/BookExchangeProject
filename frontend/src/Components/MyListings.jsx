@@ -5,7 +5,8 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
+
 
 export default function MyListings() {
   const [books, setBooks] = useState([]);
@@ -89,7 +90,7 @@ export default function MyListings() {
               <CardMedia
                 component="img"
                 sx={{ width: 150 }}
-                image={`${API_BASE}.com${book.coverImageURL}`} // Correct path
+                image={`${API_BASE}${book.coverImageURL}`} // Correct path
                 alt={book.title}
               />
               <CardContent sx={{ flex: 1 }}>

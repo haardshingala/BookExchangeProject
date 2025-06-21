@@ -1,6 +1,6 @@
 import React, { useState , useEffect} from 'react';
 import { Box, Tabs, Tab, Card, CardContent, Typography, Button, Avatar } from '@mui/material';
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
 
 // Helper component for tab panels
 function TabPanel(props) {

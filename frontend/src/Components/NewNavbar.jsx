@@ -26,7 +26,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
 
 export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
   const [drawerOpen, setDrawerOpen] = useState(false);

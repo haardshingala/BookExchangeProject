@@ -20,7 +20,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useTheme } from "@mui/material/styles";
 import { toast } from "sonner";
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
 
 export default function ExchangeDialog({ book, isOpen, onOpenChange }) {
   const theme = useTheme();

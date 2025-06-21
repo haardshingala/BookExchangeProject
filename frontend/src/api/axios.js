@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://bookexchangeplatform-3rjn.onrender.com/', // backend server URL
+  baseURL: 'https://bookexchangeproject-backend.onrender.com', // backend server URL
   headers: {
     'Content-Type': 'application/json',
   },

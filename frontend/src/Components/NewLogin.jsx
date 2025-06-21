@@ -13,7 +13,8 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
+
 
 export default function NewLogin({ setIsLoggedIn }) {
   const theme = useTheme();

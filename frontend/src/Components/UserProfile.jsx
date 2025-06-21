@@ -18,7 +18,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);

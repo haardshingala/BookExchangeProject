@@ -4,7 +4,7 @@ import axios from 'axios';
 import NewSearchFilter from './NewSearchFilter';
 import NewBookCard from './NewBookCard';
 import BookList from './BookList';
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
 
 export default function Home() {
   const [books, setBooks] = useState([]);

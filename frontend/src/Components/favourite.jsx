@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import BookList from './BookList';
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
+
+
 export default function Favourites() {
   const [books, setBooks] = useState([]); // store books
   const [loading, setLoading] = useState(true);

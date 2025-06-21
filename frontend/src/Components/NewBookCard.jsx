@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import ExchangeDialog from './ExchangeDialog';
-const API_BASE = process.env.REACT_APP_BACKEND_URL;
+import {API_BASE} from "../utils/api";
 
 const NewBookCard = ({ book }) => {
   const theme = useTheme();
