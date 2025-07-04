@@ -21,8 +21,8 @@ const userSchema = new Schema({
         required: true,
     },
     profileImageURL: {
-        type: String,
-        default: `/images/images.jpeg`,
+        url: { type: String },
+        public_id: { type: String},
     },
     city: {
         type: String,

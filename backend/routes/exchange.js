@@ -12,7 +12,7 @@ router.post("/exchange-request/:bookId", AuthenticateToken, async (req, res) => 
         const requester = req.user._id;
         const { bookId } = req.params;
         const requestedBook = bookId;
-        const book = await Book.findById(requestedBook)        
+        const book = await Book.findById(requestedBook)
         if (!book) {
             return res.status(404).json({ message: "Book not found" });
         }
@@ -100,7 +100,7 @@ router.get("/recieved-requests", AuthenticateToken, async (req, res) => {
     try {
         const owner = req.user._id;
 
-        const recievedRequests = await Exchange.find({ owner: owner }).populate("requester", "fullName email").populate("requestedBook", "title authors coverImageURL");
+        const recievedRequests = await Exchange.find({ owner: owner }).populate("requester", "fullName email").populate("requestedBook", "title authors coverImageURL").populate("offeredBook", "owner title authors coverImageURL");
 
 
         res.status(200).json(recievedRequests);
@@ -115,7 +115,7 @@ router.get("/sent-requests", AuthenticateToken, async (req, res) => {
     try {
         const requester = req.user._id;
 
-        const sentRequests = await Exchange.find({ requester: requester }).populate("owner", "fullName email").populate("requestedBook", "title authors coverImageURL");
+        const sentRequests = await Exchange.find({ requester: requester }).populate("owner", "fullName email").populate("requestedBook", "title authors coverImageURL").populate("offeredBook", "owner title authors coverImageURL");
 
 
         res.status(200).json(sentRequests);

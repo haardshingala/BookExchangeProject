@@ -33,6 +33,8 @@ export default function ExchangeRequests() {
   const token = localStorage.getItem("token");
 
   
+  
+useEffect(() => {
   const fetchReceivedRequests = async () => {
     try {
       const res = await fetch(`${API_BASE}/user/recieved-requests`, {
@@ -40,12 +42,12 @@ export default function ExchangeRequests() {
       });
       const data = await res.json();
       setReceivedRequests(data);
-      
+      //console.log(receivedRequests);
     } catch (error) {
       console.error("Error fetching sent requests:", error);
     }
   };
-useEffect(() => {
+
   const fetchSentRequests = async () => {
     try {
       const res = await fetch(`${API_BASE}/user/sent-requests`, {
@@ -53,7 +55,7 @@ useEffect(() => {
       });
       const data = await res.json();
       setSentRequests(data);
-      console.log(sentRequests);
+      
     } catch (error) {
       console.error("Error fetching sent requests:", error);
     }
@@ -66,6 +68,7 @@ useEffect(() => {
     fetchReceivedRequests();
   }
 }, [token]);
+console.log(receivedRequests);
 
 
 const handleAcceptRequest = async (exchangeId) => {
@@ -142,14 +145,14 @@ const handleRejectRequest = async (exchangeId) => {
             <Card key={req._id} sx={{ mb: 2, p: 2, display: 'flex', alignItems: 'center' }}>
               <Avatar
                 variant="square"
-                src={`${API_BASE}${req.requestedBook.coverImageURL}`}
+                src={req.requestedBook.coverImageURL.url}
               alt={req.requestedBook.title}
                 sx={{ width: 100, height: 150, mr: 2 }}
               />
               <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h6">{req.requester.fullName} requested an exchange</Typography>
+                <Typography variant="h6">{req.requester.fullName} requested an exchange for {req.requestedBook.title} </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Book: {req.requestedBook.title}
+                  Offered Book: {req.offeredBook.title}
                 </Typography>
                 <Typography variant="body2" display="block" sx={{ mt: 0.5 }}>
                   Status: {req.status}
@@ -182,14 +185,14 @@ const handleRejectRequest = async (exchangeId) => {
             <Card key={req._id} sx={{ mb: 2, p: 2, display: 'flex', alignItems: 'center' }}>
               <Avatar
                 variant="square"
-                src={`${API_BASE}${req.requestedBook.coverImageURL}`}
+                src={req.requestedBook.coverImageURL.url}
               alt={req.requestedBook.title}
                 sx={{ width: 100, height: 150, mr: 2 }}
               />
               <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h6">You requested an exchange</Typography>
+                <Typography variant="h6">You requested an exchange for {req.requestedBook.title}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Book: {req.requestedBook.title}
+                  Offered Book : {req.offeredBook.title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                   To: {req.owner.fullName}
