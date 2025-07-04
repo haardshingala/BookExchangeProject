@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import {
   Card, CardContent, CardMedia, Typography, Button, Box, Stack, IconButton, Dialog, DialogTitle,
-  DialogContent, DialogActions, TextField, Grid
+  DialogContent, DialogActions, TextField, Grid, Avatar, MenuItem
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {API_BASE} from "../utils/api";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import { API_BASE } from "../utils/api";
+import { LANGUAGE_OPTIONS, CONDITION_OPTIONS } from "../constants/bookOptions";
 
 
 export default function MyListings() {
   const [books, setBooks] = useState([]);
   const [editBook, setEditBook] = useState(null);
+  const [selectedCoverFile, setselectedCoverFile] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   useEffect(() => {
@@ -38,42 +41,70 @@ export default function MyListings() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (response.ok) {
+
+      if (response.status === 204) {
         setBooks(prev => prev.filter(book => book._id !== bookId));
-        alert("Book deleted successfully!");
         setConfirmDeleteId(null);
-      } else {
-        alert("Failed to delete book.");
+        alert("Book deleted successfully!");
+      } 
+      else {
+        const errorMsg = await response.text();
+        alert(errorMsg || "Failed to delete book.");
       }
     } catch (err) {
       console.error("Delete error:", err);
+      alert("An error occurred while deleting the book.");
     }
+  };
+
+  const handleImageChange = (e) => {
+    setselectedCoverFile(e.target.files[0]);
   };
 
   const handleUpdate = async () => {
     const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`${API_BASE}/book/update-book/${editBook._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(editBook)
-      });
+    
 
-      if (response.ok) {
-        const updated = await response.json();
-        setBooks(prev =>
-          prev.map(book => (book._id === updated._id ? updated : book))
-        );
-        setEditBook(null);
-        alert("Book updated!");
-      } else {
-        alert("Failed to update book.");
-      }
+    /* ---------- 1. Build FormData ---------- */
+    const fd = new FormData();
+
+    // Text fields → append directly
+    fd.append("title", editBook.title);
+    fd.append("description", editBook.description);
+    fd.append("condition", editBook.condition);
+    fd.append("language", editBook.language);
+
+    // Arrays / objects → stringify
+   
+fd.append("authors", JSON.stringify(editBook.authors));
+fd.append("genres",  JSON.stringify(editBook.genres));  // []
+
+    // Optional new cover image
+    if (selectedCoverFile) {
+      fd.append("coverImage", selectedCoverFile);
+    }
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/book/update-book/${editBook._id}`,   
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          body: fd,                    // <-- FormData, not JSON
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed");
+
+      const updated = await res.json();
+      setBooks(prev =>
+        prev.map(book => (book._id === updated._id ? updated : book))
+      );
+      setEditBook(null);
+      alert("Book updated!");
     } catch (err) {
       console.error("Update error:", err);
+      alert("Failed to update book.");
     }
   };
 
@@ -90,7 +121,7 @@ export default function MyListings() {
               <CardMedia
                 component="img"
                 sx={{ width: 150 }}
-                image={`${API_BASE}${book.coverImageURL}`} // Correct path
+                image={book.coverImageURL.url} // Correct path
                 alt={book.title}
               />
               <CardContent sx={{ flex: 1 }}>
@@ -118,6 +149,37 @@ export default function MyListings() {
       <Dialog open={Boolean(editBook)} onClose={() => setEditBook(null)} maxWidth="sm" fullWidth>
         <DialogTitle>Edit Book</DialogTitle>
         <DialogContent>
+        {console.log(editBook)}
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+            <Box sx={{ position: "relative", width: "fit-content" }}>
+              <CardMedia
+              component="img"
+                src={
+                  selectedCoverFile
+                    ? URL.createObjectURL(selectedCoverFile)
+                    : editBook?.coverImageURL?.url || "/images/default-avatar.jpeg"
+                }
+                alt={editBook?.title}
+                sx={{ width: 140, height: 190 , objectFit: "cover",  //  ← crop to fill the box
+    borderRadius: 1, }}
+              />
+        
+              <IconButton
+                component="label"
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  backgroundColor: "#fff",
+                  boxShadow: 2,
+                  "&:hover": { backgroundColor: "#f5f5f5" }
+                }}
+              >
+                <PhotoCamera sx={{ fontSize: 20 }} />
+                <input hidden type="file" accept="image/*" onChange={handleImageChange} />
+              </IconButton>
+            </Box>
+          </Box>
           {editBook && (
             <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={12}>
@@ -126,19 +188,31 @@ export default function MyListings() {
               </Grid>
               <Grid item xs={6}>
                 <TextField fullWidth label="Author" value={editBook.authors}
-                  onChange={e => setEditBook({ ...editBook, author: e.target.value })} />
+                  onChange={e => setEditBook({ ...editBook, authors: e.target.value })} />
               </Grid>
               <Grid item xs={6}>
                 <TextField fullWidth label="Genre" value={editBook.genres}
-                  onChange={e => setEditBook({ ...editBook, genre: e.target.value })} />
+                  onChange={e => setEditBook({ ...editBook, genres: e.target.value })} />
               </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth label="Condition" value={editBook.condition}
-                  onChange={e => setEditBook({ ...editBook, condition: e.target.value })} />
+                <TextField select fullWidth label="Condition" value={editBook.condition}
+                  onChange={e => setEditBook({ ...editBook, condition: e.target.value })} >
+                   {CONDITION_OPTIONS.map(opt => (
+        <MenuItem key={opt} value={opt}>
+          {opt}
+        </MenuItem>
+      ))}
+                  </TextField>
               </Grid>
               <Grid item xs={6}>
-                <TextField fullWidth label="Language" value={editBook.language}
-                  onChange={e => setEditBook({ ...editBook, language: e.target.value })} />
+                <TextField select fullWidth label="Language" value={editBook.language}
+                  onChange={e => setEditBook({ ...editBook, language: e.target.value })} >
+                  {LANGUAGE_OPTIONS.map(opt => (
+        <MenuItem key={opt} value={opt}>
+          {opt}
+        </MenuItem>
+      ))}
+      </TextField>
               </Grid>
               <Grid item xs={12}>
                 <TextField fullWidth label="Description" multiline rows={3}

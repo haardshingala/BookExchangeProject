@@ -20,7 +20,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useTheme } from "@mui/material/styles";
 import { toast } from "sonner";
-import {API_BASE} from "../utils/api";
+import { API_BASE } from "../utils/api";
 
 export default function ExchangeDialog({ book, isOpen, onOpenChange }) {
   const theme = useTheme();
@@ -55,109 +55,109 @@ export default function ExchangeDialog({ book, isOpen, onOpenChange }) {
 
 
 
-  
 
 
-const handleExchangeRequest = async () => {
-  setLoading(true);
-  const token = localStorage.getItem("token");
 
-  try {
-    const response = await fetch(`${API_BASE}/user/request/${book._id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        offeredBookId: selectedBook, // from the dropdown
-        message, // optional
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      setIsRequested(true);
-      setExchangeId(data.exchange._id);
-    } else {
-      alert(data.message || "Failed to send exchange request.");
-    }
-  } catch (error) {
-    console.error("Error sending exchange request:", error);
-    alert("Something went wrong. Try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
-const handleCancelRequest = async () => {
-  if (!exchangeId) return;
-
-  const confirmCancel = window.confirm("Are you sure you want to cancel the request?");
-  if (!confirmCancel) return;
-
-  const token = localStorage.getItem("token");
-  setLoading(true);
-
-  try {
-    const res = await fetch(
-      `${API_BASE}/user/cancel/${exchangeId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (res.ok) {
-      setIsRequested(false);
-      setExchangeId(null);
-    } else {
-      console.error("Failed to cancel request");
-    }
-  } catch (err) {
-    console.error("Cancel request error:", err);
-  } finally {
-    setLoading(false);
-  }
-};
-
-useEffect(() => {
-  const fetchExistingRequest = async () => {
+  const handleExchangeRequest = async () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch(`${API_BASE}/user/sent-requests`, {
+      const response = await fetch(`${API_BASE}/user/request/${book._id}`, {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({
+          offeredBookId: selectedBook, // from the dropdown
+          message, // optional
+        }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
+      const data = await response.json();
 
-        // Assuming you're viewing a specific book (e.g., `bookId` is the requestedBook)
-        const existingRequest = data.find(
-          (req) =>
-            req.requestedBook._id === book._id // bookId from props or route param
-        );
-
-        if (existingRequest) {
-          setIsRequested(true);
-          setExchangeId(existingRequest._id);
-          setSelectedBook(existingRequest.offeredBook?._id || "");
-          setMessage(existingRequest.message || "");
-        }
+      if (response.ok) {
+        setIsRequested(true);
+        setExchangeId(data.exchange._id);
+      } else {
+        alert(data.message || "Failed to send exchange request.");
       }
-    } catch (err) {
-      console.error("Error fetching exchange requests:", err);
+    } catch (error) {
+      console.error("Error sending exchange request:", error);
+      alert("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  fetchExistingRequest();
-}, [book._id]); // Add bookId as dependency
+  const handleCancelRequest = async () => {
+    if (!exchangeId) return;
+
+    const confirmCancel = window.confirm("Are you sure you want to cancel the request?");
+    if (!confirmCancel) return;
+
+    const token = localStorage.getItem("token");
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/user/cancel/${exchangeId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.ok) {
+        setIsRequested(false);
+        setExchangeId(null);
+      } else {
+        console.error("Failed to cancel request");
+      }
+    } catch (err) {
+      console.error("Cancel request error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchExistingRequest = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const res = await fetch(`${API_BASE}/user/sent-requests`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          // Assuming you're viewing a specific book (e.g., `bookId` is the requestedBook)
+          const existingRequest = data.find(
+            (req) =>
+              req.requestedBook._id === book._id // bookId from props or route param
+          );
+
+          if (existingRequest) {
+            setIsRequested(true);
+            setExchangeId(existingRequest._id);
+            setSelectedBook(existingRequest.offeredBook?._id || "");
+            setMessage(existingRequest.message || "");
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching exchange requests:", err);
+      }
+    };
+
+    fetchExistingRequest();
+  }, [book._id]); // Add bookId as dependency
 
 
 
@@ -192,7 +192,7 @@ useEffect(() => {
           <Box sx={{ width: { xs: "100%", sm: "35%" } }}>
             <Box
               component="img"
-              src={`${API_BASE}${book.coverImageURL}`}
+              src={book.coverImageURL?.url || "/images/book‑placeholder.jpeg"}
               alt={book.title}
               sx={{
                 width: "100%",
@@ -235,10 +235,9 @@ useEffect(() => {
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar
                 src={
-                  book.owner?.profileImageURL
-                    ? `${API_BASE}.com${book.owner.profileImageURL}`
-                    : book.owner.fullName // or your fallback image URL
+                  book.owner?.profileImageURL?.url || "/images/default-avatar.jpeg"
                 }
+                alt={book.owner?.fullName}
               />
 
 
@@ -279,30 +278,30 @@ useEffect(() => {
                 onChange={(e) => setMessage(e.target.value)}
               />
 
-{isRequested ? (
-  <Stack direction="row" spacing={2}>
-    <Button variant="contained" disabled>
-      Requested
-    </Button>
-    <Button
-      variant="outlined"
-      color="error"
-      onClick={handleCancelRequest}
-      disabled={loading}
-    >
-      Cancel Request
-    </Button>
-  </Stack>
-) : (
-  <Button
-    variant="contained"
-    onClick={handleExchangeRequest}
-    disabled={loading}
-    sx={{ alignSelf: "flex-start", mt: 1 }}
-  >
-    {loading ? "Sending..." : "Send Exchange Request"}
-  </Button>
-)}
+              {isRequested ? (
+                <Stack direction="row" spacing={2}>
+                  <Button variant="contained" disabled>
+                    Requested
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={handleCancelRequest}
+                    disabled={loading}
+                  >
+                    Cancel Request
+                  </Button>
+                </Stack>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={handleExchangeRequest}
+                  disabled={loading}
+                  sx={{ alignSelf: "flex-start", mt: 1 }}
+                >
+                  {loading ? "Sending..." : "Send Exchange Request"}
+                </Button>
+              )}
 
 
 

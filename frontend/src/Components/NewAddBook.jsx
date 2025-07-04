@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Avatar, IconButton, Stack, MenuItem } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import {API_BASE} from "../utils/api";
+import { API_BASE } from "../utils/api";
+import { LANGUAGE_OPTIONS, CONDITION_OPTIONS } from "../constants/bookOptions";
 
 export default function NewAddBook() {
   const theme = useTheme();
@@ -37,29 +38,32 @@ export default function NewAddBook() {
   };
 
   const handleImageRemove = () => {
-    
+
     setBookData({ ...bookData, image: null, imageFile: null });
 
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
     formData.append("title", bookData.title);
     formData.append("description", bookData.description);
     formData.append("condition", bookData.condition);
     formData.append("language", bookData.language);
-    formData.append("authors", JSON.stringify(bookData.authors));
-    formData.append("genres", JSON.stringify(bookData.genres));
-  
+    formData.append("authors", JSON.stringify(bookData.authors || []));
+    formData.append("genres",  JSON.stringify(bookData.genres  || []));
+
+    
+
+
     if (bookData.imageFile) {
       formData.append("coverImage", bookData.imageFile);
     }
-  
+
     try {
       const token = localStorage.getItem("token");
-  
+
       const response = await fetch(`${API_BASE}/book/add-book`, {
         method: "POST",
         headers: {
@@ -67,9 +71,16 @@ export default function NewAddBook() {
         },
         body: formData,
       });
-  
+
+      if (!response.ok) {
+  const text = await response.text();        // may be HTML
+  console.error(text);
+  alert("Add Book failed  see console.");
+  return;
+}
+
       const result = await response.json();
-  
+
       if (response.ok) {
         alert("Book added successfully!");
         console.log(result);
@@ -93,7 +104,7 @@ export default function NewAddBook() {
       alert("Something went wrong while submitting the form.");
     }
   };
-  
+
 
 
 
@@ -153,41 +164,42 @@ export default function NewAddBook() {
           />
 
 
-          {/* Language */}
-<Typography sx={{ mt: 2, color: theme.palette.primary.main }}>Language</Typography>
-<TextField
-  select
-  name="language"
-  value={bookData.language}
-  onChange={handleChange}
-  fullWidth
-  size="small"
-  sx={textFieldStyle(theme)}
->
-  <MenuItem value="">Select Language</MenuItem>
-  <MenuItem value="English">English</MenuItem>
-  <MenuItem value="Hindi">Hindi</MenuItem>
-  <MenuItem value="Spanish">Spanish</MenuItem>
-  <MenuItem value="French">French</MenuItem>
-  {/* Add more languages if needed */}
-</TextField>
+  
 
-{/* Genres */}
-<Typography sx={{ mt: 2, color: theme.palette.primary.main }}>Genres</Typography>
-<TextField
-  name="genres"
-  value={bookData.genres.join(', ')}
-  onChange={(e) =>
-    setBookData({
-      ...bookData,
-      genres: e.target.value.split(',').map(g => g.trim())
-    })
-  }
-  fullWidth
-  size="small"
-  placeholder="Enter genres, comma-separated (e.g., Fiction, Thriller, Mystery)"
-  sx={textFieldStyle(theme)}
-/>
+
+
+          {/* Language */}
+          <Typography sx={{ mt: 2, color: theme.palette.primary.main }}>Language</Typography>
+          <TextField
+            select
+            name="language"
+            value={bookData.language}
+            onChange={handleChange}
+            fullWidth
+            size="small"
+            sx={textFieldStyle(theme)}
+          >
+          {LANGUAGE_OPTIONS.map(opt => (
+    <MenuItem key={opt} value={opt}>{opt}</MenuItem>
+  ))}
+          </TextField>
+
+          {/* Genres */}
+          <Typography sx={{ mt: 2, color: theme.palette.primary.main }}>Genres</Typography>
+          <TextField
+            name="genres"
+            value={bookData.genres.join(', ')}
+            onChange={(e) =>
+              setBookData({
+                ...bookData,
+                genres: e.target.value.split(',').map(g => g.trim())
+              })
+            }
+            fullWidth
+            size="small"
+            placeholder="Enter genres, comma-separated (e.g., Fiction, Thriller, Mystery)"
+            sx={textFieldStyle(theme)}
+          />
 
           {/* Description */}
           <Typography sx={{ mt: 2, color: theme.palette.primary.main }}>Description</Typography>
@@ -203,7 +215,7 @@ export default function NewAddBook() {
             sx={textFieldStyle(theme)}
           />
 
-          
+
 
 
           {/* Condition */}
@@ -217,12 +229,9 @@ export default function NewAddBook() {
             size="small"
             sx={textFieldStyle(theme)}
           >
-            <MenuItem value="">Select Condition</MenuItem>
-            <MenuItem value="New">📖 New</MenuItem>
-            <MenuItem value="Like New">✨ Like New</MenuItem>
-            <MenuItem value="Very Good">👍 Very Good</MenuItem>
-            <MenuItem value="Good">✅ Good</MenuItem>
-            <MenuItem value="Fair">📚 Fair</MenuItem>
+             {CONDITION_OPTIONS.map(opt => (
+    <MenuItem key={opt} value={opt}>{opt}</MenuItem>
+  ))}
           </TextField>
 
           {/* Book Image */}
@@ -233,6 +242,7 @@ export default function NewAddBook() {
                 <Avatar
                   src={bookData.image}
                   alt="Book Preview"
+                  className="h-48 object-cover" 
                   sx={{
                     width: 160,
                     height: 160,

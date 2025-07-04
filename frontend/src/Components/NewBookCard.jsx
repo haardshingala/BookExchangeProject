@@ -87,7 +87,7 @@ const NewBookCard = ({ book }) => {
           <CardMedia
             component="img"
             height="250"
-            image={`${API_BASE}${book.coverImageURL}`}
+            image={book?.coverImageURL?.url}
 
             alt={book.title}
             sx={{

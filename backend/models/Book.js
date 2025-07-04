@@ -1,4 +1,4 @@
-const { Schema , model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const bookSchema = new Schema({
     title: {
@@ -6,9 +6,9 @@ const bookSchema = new Schema({
         required: true,
     },
     authors: [{
-    type: String,
-    required: true,
-  }],
+        type: String,
+        required: true,
+    }],
     description: {
         type: String,
         required: true,
@@ -17,17 +17,19 @@ const bookSchema = new Schema({
         type: String,
         required: true,
     }],
-    
+
     condition: {
         type: String,
-        required: true,
-        enum: ["New", "Like New", "Good", "Fair", "Poor"],
+        enum: ["New", "Like New", "Very Good", "Good", "Fair"],
+        required: true,    
     },
     coverImageURL: {
-        type: String,
-        required: true,
+        type: {
+            url: { type: String, required: true },
+            public_id: { type: String, required: true },
+        },
     },
-    owner:{
+    owner: {
         type: Schema.Types.ObjectId,
         ref: "User",
     },
@@ -38,11 +40,13 @@ const bookSchema = new Schema({
     },
     language: {
         type: String,
+        enum: ["English", "Hindi", "Gujarati"],
         required: true,
-    }
+    },
+
 
 }, { timestamps: true });
 
-const Book = model("Book",bookSchema);
+const Book = model("Book", bookSchema);
 
 module.exports = Book;

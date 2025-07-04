@@ -47,7 +47,7 @@ function App() {
          
         <Route path="/profile" element={<Profile />} />
         <Route path="/exchange-requests" element={<ExchangeRequests />} />
-        <Route path="/chats" element={<Chats />} />
+        
 
         {/* Other routes */}
 

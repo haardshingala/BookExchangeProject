@@ -18,7 +18,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import {API_BASE} from "../utils/api";
+import { API_BASE } from "../utils/api";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -26,6 +26,8 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+ 
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -44,6 +46,10 @@ export default function ProfilePage() {
     fetchProfile();
   }, [token]);
 
+   const [interestsText, setInterestsText] = useState(
+  Array.isArray(user?.interests) ? user.interests.join(", ") : ""
+);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -53,8 +59,24 @@ export default function ProfilePage() {
   };
 
   const handleUpdate = async () => {
+     const interestsArray = interestsText
+    .split(",")
+    .map(s => s.trim())
+    .filter(Boolean);
+    // 1️ compose a fresh object yourself
+const payloadData = { ...formData, interests: interestsArray };
+
+// 2️ update state *after* the fetch (for next dialog use)
+setFormData(payloadData); //updating in formdata so need to separately set this field
+
     const form = new FormData();
-    Object.entries(formData).forEach(([key, val]) => form.append(key, val));
+    Object.entries(payloadData).forEach(([key, val]) => {
+      const payload = Array.isArray(val) || typeof val === "object"
+        ? JSON.stringify(val)
+        : val;
+      form.append(key, payload);
+    });
+    
     if (selectedImage) form.append("profileImage", selectedImage);
 
     try {
@@ -66,6 +88,9 @@ export default function ProfilePage() {
       const data = await res.json();
       setUser(data);
       setEditMode(false);
+      
+      setInterestsText(data.interests.join(", ")); // dialog preset next time
+      setFormData({ ...data })
       alert("Profile updated!");
     } catch (error) {
       console.error("Update failed:", error);
@@ -78,13 +103,18 @@ export default function ProfilePage() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) {
+
+      if (res.status === 204) {
         localStorage.removeItem("token");
         alert("Account deleted successfully.");
         window.location.href = "/";
+      } else {
+        const msg = await res.text();
+        alert(msg || "Deletion failed.");
       }
-    } catch (error) {
-      console.error("Deletion failed:", error);
+    } catch (err) {
+      console.error("Deletion failed:", err);
+      alert("Deletion failed.");
     }
   };
 
@@ -97,28 +127,11 @@ export default function ProfilePage() {
           <Grid item xs={12} md={4} sx={{ textAlign: "center" }}>
             <Box sx={{ position: "relative", display: "inline-block" }}>
               <Avatar
-                src={`${API_BASE}${user.profileImageURL}`}
+                src={user.profileImageURL?.url || "/images/default-avatar.jpeg"}
                 alt={user.fullName}
                 sx={{ width: 140, height: 140, mx: "auto", mb: 1 }}
               />
-              <IconButton
-                component="label"
-                sx={{
-                  position: "absolute",
-                  bottom: 10,
-                  right: 10,
-                  backgroundColor: "#fff",
-                }}
-                
-              >
-                <PhotoCamera />
-                <input
-                  hidden
-                  accept="image/*"
-                  type="file"
-                  onChange={handleImageChange}
-                />
-              </IconButton>
+             
             </Box>
             <Typography variant="h6">{user.fullName}</Typography>
             <Typography color="text.secondary">{user.email}</Typography>
@@ -128,15 +141,19 @@ export default function ProfilePage() {
             <Stack spacing={2}>
               <Typography variant="body1"><strong>City:</strong> {user.city}</Typography>
               <Typography variant="body1"><strong>Address:</strong> {user.address}</Typography>
-              
               <Typography variant="body1"><strong>Bio:</strong> {user.bio}</Typography>
-              <Typography variant="body1"><strong>Interests:</strong> {user.interests}</Typography>
+              <Typography variant="body1">
+                <strong>Interests:</strong>{" "}
+                {Array.isArray(user.interests) ? user.interests.join(", ") : user.interests}
+              </Typography>
+
 
               <Box mt={2}>
                 <Button
                   variant="contained"
                   startIcon={<EditIcon />}
-                  onClick={() => setEditMode(true)}
+                  onClick={() => {setInterestsText(user.interests.join(", "));
+                   setEditMode(true);}}
                   sx={{ mr: 2 }}
                 >
                   Edit Profile
@@ -159,6 +176,34 @@ export default function ProfilePage() {
       <Dialog open={editMode} onClose={() => setEditMode(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Edit Your Profile</DialogTitle>
         <DialogContent>
+         <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+    <Box sx={{ position: "relative", width: "fit-content" }}>
+      <Avatar
+        src={
+          selectedImage
+            ? URL.createObjectURL(selectedImage)
+            : user.profileImageURL?.url || "/images/default-avatar.jpeg"
+        }
+        alt={user.fullName}
+        sx={{ width: 140, height: 140 }}
+      />
+
+      <IconButton
+        component="label"
+        sx={{
+          position: "absolute",
+          bottom: 8,
+          right: 8,
+          backgroundColor: "#fff",
+          boxShadow: 2,
+          "&:hover": { backgroundColor: "#f5f5f5" }
+        }}
+      >
+        <PhotoCamera sx={{ fontSize: 20 }} />
+        <input hidden type="file" accept="image/*" onChange={handleImageChange} />
+      </IconButton>
+    </Box>
+  </Box>
           <Grid container spacing={2} mt={1}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -175,7 +220,9 @@ export default function ProfilePage() {
                 label="Email"
                 name="email"
                 value={formData.email || ""}
+                disabled
                 onChange={handleChange}
+                InputProps={{ readOnly: true }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -196,15 +243,7 @@ export default function ProfilePage() {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Books Owned"
-                name="booksOwned"
-                value={formData.booksOwned || ""}
-                onChange={handleChange}
-              />
-            </Grid>
+            
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -218,12 +257,14 @@ export default function ProfilePage() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                fullWidth
-                label="Interests"
-                name="interests"
-                value={formData.interests || ""}
-                onChange={handleChange}
-              />
+  fullWidth
+  label="Interests (comma separated)"
+  value={interestsText}
+  onChange={e => setInterestsText(e.target.value)}
+/>
+
+  
+
             </Grid>
           </Grid>
         </DialogContent>

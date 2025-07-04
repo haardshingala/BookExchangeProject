@@ -12,16 +12,24 @@ const cors = require("cors");
 
 
 app.use(cors());
-app.use("/uploads", express.static("uploads"));
+
 
 app.use(express.json());
 
 app.use("/user",userRoute);
 
-app.use("/book",bookRoute);
+app.use("/book", bookRoute);
 app.use("/user",favouriteRoute);
 app.use("/user",ExchangeRoute);
 
+app.use((err, req, res, next) => {
+  console.error("🔥 GLOBAL ERROR:", err);
+  res.status(500).json({
+    message: err.message || "Internal server error",
+    type: err.name,
+    ...(err.code && { code: err.code }),
+  });
+});
 app.use("/", (req, res,next)=>{
     res.send("welcome to book exchange platform");
     next();

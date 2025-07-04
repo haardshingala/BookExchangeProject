@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -26,7 +26,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import {API_BASE} from "../utils/api";
+import { API_BASE } from "../utils/api";
 
 export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -47,16 +47,16 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
   };
 
   const token = localStorage.getItem("token");
-  
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) return;
-  
+
       try {
         const res = await fetch(`${API_BASE}/user/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-  
+
         if (res.ok) {
           const data = await res.json();
           setUser(data);
@@ -67,12 +67,12 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
         console.error("Error fetching profile:", error);
       }
     };
-  
+
     fetchProfile();
   }, [token]);
-  
 
-    
+
+
 
   const drawerContent = (
     <Box
@@ -124,12 +124,6 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
           </ListItemIcon>
           <ListItemText primary="Exchange Requests" />
         </ListItem>
-        <ListItem button onClick={() => navigate('/chats')}>
-          <ListItemIcon sx={{ color: theme.palette.secondary.main }}>
-            <ChatIcon />
-          </ListItemIcon>
-          <ListItemText primary="Chats" />
-        </ListItem>
       </List>
 
       <Divider />
@@ -142,7 +136,9 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
           alignItems: 'center',
         }}
       >
-        <Avatar alt={user?.fullName} src={`${API_BASE}${user?.profileImageURL}`} sx={{ mr: 1 }} />
+        <Avatar src={user?.profileImageURL?.url || "/images/default-avatar.jpeg"}
+          alt={user?.fullName}
+          sx={{ mr: 1 }} />
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           {user?.fullName}
         </Typography>
@@ -192,8 +188,8 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
               }} onClick={handleLogin}>
                 Login
               </Button>
-              <Button variant="contained"  sx={{
-                
+              <Button variant="contained" sx={{
+
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.primary.main,
                 borderColor: theme.palette.background.default,
@@ -201,8 +197,8 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
                   backgroundColor: theme.palette.secondary.main,
                   color: theme.palette.primary.main
                 },
-               ml: 1
-              }}  onClick={handleSignup}>
+                ml: 1
+              }} onClick={handleSignup}>
                 Join Now
               </Button>
             </>
@@ -211,7 +207,9 @@ export default function NewNavbar({ setIsLoggedIn, isLoggedIn }) {
           {isLoggedIn && (
             <>
               <IconButton>
-                <Avatar alt={user?.fullName} src={`${API_BASE}${user?.profileImageURL}`} />
+                <Avatar src={user?.profileImageURL?.url || "/images/default-avatar.jpeg"}
+                  alt={user?.fullName}
+                />
               </IconButton>
               <IconButton sx={{ color: theme.palette.background.default }} onClick={toggleDrawer(true)}>
                 <MenuIcon />
