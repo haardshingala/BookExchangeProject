@@ -13,6 +13,18 @@ const cors = require("cors");
 
 app.use(cors());
 
+// Allow localhost for dev AND your Vercel frontend in prod
+const allowedOrigins = [
+  "http://localhost:5173",                       // Vite dev
+  "https://book-loop-project.vercel.app"         // Production frontend
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",  // *** JWT header ***
+  optionsSuccessStatus: 204                      // some legacy browsers
+}));
 
 app.use(express.json());
 
